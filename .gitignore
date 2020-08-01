@@ -105,5 +105,5 @@ dist
 
 expressapp/node_modules
 exampleapi/node_modules
-mysqldata
+mysqldata/*
 !mysqldata/.keep
