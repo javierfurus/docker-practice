@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+expressapp/node_modules
+exampleapi/node_modules

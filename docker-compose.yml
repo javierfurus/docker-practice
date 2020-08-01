@@ -5,7 +5,48 @@ services:
       image: nginx:latest
       volumes:
         - ./nginx.conf:/etc/nginx/nginx.conf
+        - ../mysite:/usr/share/nginx/html
       expose:
         - "80"
       ports:
         - "80:80"
+      networks:
+        inner:
+          aliases:
+            - webserver
+    expressapp:
+      container_name: expressapp
+      build:
+        context: ./expressapp
+        dockerfile: Dockerfile
+      volumes:
+        - ./expressapp:/usr/src/app
+      environment:
+       PORT: "80"
+      expose: 
+        - "80"
+      ports:
+        - "3000:80"
+      networks:
+        inner:
+          aliases:
+            - expressapp
+    exampleapi:
+      container_name: exampleapi
+      build:
+        context: ./exampleapi
+        dockerfile: Dockerfile
+      volumes:
+        - ./exampleapi:/usr/src/app
+      environment:
+       PORT: "80"
+      expose: 
+        - "80"
+      ports:
+        - "4000:80"
+      networks:
+        inner:
+          aliases:
+            - exampleapi
+networks: 
+  inner: {}
