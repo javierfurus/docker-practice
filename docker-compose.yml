@@ -1,52 +1,79 @@
-version: "2"
-services: 
-    webserver:
-      container_name: webserver
-      image: nginx:latest
-      volumes:
-        - ./nginx.conf:/etc/nginx/nginx.conf
-        - ../mysite:/usr/share/nginx/html
-      expose:
-        - "80"
-      ports:
-        - "80:80"
-      networks:
-        inner:
-          aliases:
-            - webserver
-    expressapp:
-      container_name: expressapp
-      build:
-        context: ./expressapp
-        dockerfile: Dockerfile
-      volumes:
-        - ./expressapp:/usr/src/app
-      environment:
-       PORT: "80"
-      expose: 
-        - "80"
-      ports:
-        - "3000:80"
-      networks:
-        inner:
-          aliases:
-            - expressapp
-    exampleapi:
-      container_name: exampleapi
-      build:
-        context: ./exampleapi
-        dockerfile: Dockerfile
-      volumes:
-        - ./exampleapi:/usr/src/app
-      environment:
-       PORT: "80"
-      expose: 
-        - "80"
-      ports:
-        - "4000:80"
-      networks:
-        inner:
-          aliases:
-            - exampleapi
-networks: 
+version: '2'
+services:
+  webserver:
+    container_name: webserver
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ../mysite:/usr/share/nginx/html
+    expose:
+      - '80'
+    ports:
+      - '80:80'
+    networks:
+      inner:
+        aliases:
+          - webserver
+  expressapp:
+    container_name: expressapp
+    build:
+      context: ./expressapp
+      dockerfile: Dockerfile
+    volumes:
+      - ./expressapp:/usr/src/app
+    environment:
+      PORT: '80'
+    expose:
+      - '80'
+    networks:
+      inner:
+        aliases:
+          - expressapp
+  exampleapi:
+    container_name: exampleapi
+    build:
+      context: ./exampleapi
+      dockerfile: Dockerfile
+    volumes:
+      - ./exampleapi:/usr/src/app
+    environment:
+      PORT: '80'
+    expose:
+      - '80'
+    networks:
+      inner:
+        aliases:
+          - exampleapi
+  mysqlserver:
+    container_name: mysqlserver
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    environment: 
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: testdb
+    volumes:
+      - ./mysqldata:/var/lib/mysql
+    expose:
+      - '3306'
+    networks:
+      inner:
+        aliases:
+          - mysqlserver
+  myadmin:
+    container_name: myadmin
+    image: phpmyadmin/phpmyadmin:latest
+    expose:
+      - 80
+    ports:
+      - "4000:80"
+    environment:
+        PMA_HOST: mysqlserver
+    networks:
+      inner:
+        aliases:
+          - myadmin
+networks:
   inner: {}
